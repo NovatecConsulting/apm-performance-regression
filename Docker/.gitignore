@@ -1,0 +1,11 @@
+# InspectIT CMR
+inspectit_cmr/
+
+# Jenkins
+jenkins_home/**
+
+# InfluxDB
+influxdb/**
+
+# Grafana
+grafana/**

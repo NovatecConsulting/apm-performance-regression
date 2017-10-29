@@ -1,0 +1,64 @@
+version: '2'
+services:
+  grafana:
+    image: "grafana/grafana"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    container_name:
+      grafana
+    networks:
+      - influxdb
+  influxdb:
+    image: "influxdb"
+    ports:
+      - 8086:8086
+    volumes:
+      - ./influxdb:/var/lib/influxdb
+    container_name:
+      influxdb
+    environment:
+      INFLUXDB_ADMIN_ENABLED: "true"
+      INFLUXDB_ADMIN_USER: "admin"
+      INFLUXDB_ADMIN_USER: "admin"
+    networks:
+      - influxdb
+  jenkins:
+    build:
+      context: .
+      dockerfile:
+        Dockerfile_Jenkins
+    volumes:
+      - ./jenkins/jobs:/var/jenkins_home/jobs
+    ports:
+      - 8080:8080
+      - 8761:8761
+      - 8888:8888
+      - 9411:9411
+      - 9090:9090
+      - 8090:8090
+      - 50000:50000
+    container_name:
+      jenkins
+    networks:
+      - influxdb
+      - inspectIT
+  inspectit_cmr:
+    image: "inspectit/cmr"
+    container_name:
+      inspectit_cmr
+    ports:
+      - 8182:8182
+      - 9070:9070
+    networks:
+      - inspectIT
+      - influxdb
+    volumes:
+      - ./inspectit_cmr/db:/CMR/db
+      - ./inspectit_cmr/storages:/CMR/storages
+      - ./inspectit_cmr/config:/CMR/config
+      - ./inspectit_cmr/ci:/CMR/ci
+networks:
+  influxdb:
+  inspectIT:

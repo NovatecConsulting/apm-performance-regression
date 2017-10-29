@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration-interface-import-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" schemaVersion="6">
+    <profiles>
+        <profile common="false" active="true" default="false" id="55a64c77-4671-4a65-8418-1ec0bd07c6bf" name="Petclinic [sql monitoring]" created-on="2017-06-01T11:10:20.247+02:00" updated-on="2017-06-05T14:24:07.864+02:00" imported-on="2017-09-18T13:27:48.243+02:00" revision="1" schemaVersion="6">
+            <sensor-assignment-profile-data>
+                <timer-method-sensor-assignment starts-invocation="false" min-invocation-duration="0" charting="true" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="executeQuery" constructor="false" public-mod="true" protected-mod="false" private-mod="false" default-mod="false" class-name="java.sql.Statement" superclass="false" interface="true"/>
+            </sensor-assignment-profile-data>
+        </profile>
+        <profile common="false" active="true" default="false" id="9fe061c2-2fc5-442e-951a-c02e59fb41cb" name="Petclinic [base, services]" created-on="2017-05-31T16:31:39.510+02:00" updated-on="2017-06-01T11:26:18.815+02:00" imported-on="2017-09-18T13:27:48.219+02:00" revision="1" schemaVersion="6">
+            <sensor-assignment-profile-data>
+                <timer-method-sensor-assignment starts-invocation="false" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="*" constructor="false" public-mod="true" protected-mod="false" private-mod="false" default-mod="false" class-name="org.springframework.data.jpa.repository.JpaRepository" superclass="false" interface="true"/>
+                <timer-method-sensor-assignment starts-invocation="false" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="getOwnerDetails" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="org.springframework.samples.petclinic.api.boundary.web.ApiGatewayController" superclass="false" interface="false">
+                    <context-captures>
+                        <parameter-capture index="0" display-name="owner-id"/>
+                        <return-capture display-name="owner-firstname">
+                            <paths>
+<path>firstName</path>
+                            </paths>
+                        </return-capture>
+                    </context-captures>
+                </timer-method-sensor-assignment>
+                <timer-method-sensor-assignment starts-invocation="false" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="*" constructor="false" public-mod="true" protected-mod="false" private-mod="false" default-mod="false" class-name="org.springframework.samples.petclinic.*" superclass="false" interface="false" annotation="org.springframework.web.bind.annotation.RestController"/>
+                <exception-sensor-assignment class-name="java.lang.ClassCastException" superclass="false" interface="false"/>
+            </sensor-assignment-profile-data>
+        </profile>
+        <profile common="false" active="true" default="false" id="a04abb17-b8eb-425f-b299-21ef034bcc6d" name="Petclinic [remote]" created-on="2017-06-01T11:24:44.359+02:00" updated-on="2017-06-01T11:26:08.154+02:00" imported-on="2017-09-18T13:27:48.191+02:00" revision="1" schemaVersion="6">
+            <sensor-assignment-profile-data>
+                <method-sensor-assignment sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.RemoteManualServerSensorConfig" method-name="refreshRegistry" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="com.netflix.discovery.DiscoveryClient" superclass="false" interface="false"/>
+                <method-sensor-assignment sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.RemoteManualServerSensorConfig" method-name="renew" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="com.netflix.discovery.DiscoveryClient" superclass="false" interface="false"/>
+                <method-sensor-assignment sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.RemoteManualServerSensorConfig" method-name="updateStatusForAllApplications" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="de.codecentric.boot.admin.registry.StatusUpdater" superclass="false" interface="false"/>
+                <timer-method-sensor-assignment starts-invocation="true" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="refreshRegistry" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="com.netflix.discovery.DiscoveryClient" superclass="false" interface="false"/>
+                <timer-method-sensor-assignment starts-invocation="true" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="renew" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="com.netflix.discovery.DiscoveryClient" superclass="false" interface="false"/>
+                <timer-method-sensor-assignment starts-invocation="true" min-invocation-duration="0" charting="false" sensor-config-class="rocks.inspectit.shared.cs.ci.sensor.method.impl.TimerSensorConfig" method-name="updateStatusForAllApplications" constructor="false" public-mod="true" protected-mod="true" private-mod="true" default-mod="true" class-name="de.codecentric.boot.admin.registry.StatusUpdater" superclass="false" interface="false"/>
+            </sensor-assignment-profile-data>
+        </profile>
+    </profiles>
+    <environments>
+        <environment id="f1947c5d-ccf9-4134-bc78-24ee8d2f2ced" name="Petclinic" created-on="2017-05-31T16:30:59.224+02:00" updated-on="2017-06-02T13:59:23.067+02:00" imported-on="2017-09-18T13:27:48.275+02:00" revision="1" schemaVersion="6">
+            <end-user-monitoring-config eum-enabled="false" eum-script-base-url="/" active-modules="m12" relevancyThreshold="10" listenerInstrumentationAllowed="true" agentMinificationEnabled="true"/>
+            <platform-sensor-configs>
+                <class-loading-sensor-config active="true"/>
+                <compilation-sensor-config active="true"/>
+                <cpu-sensor-config active="true"/>
+                <memory-sensor-config active="true"/>
+                <runtime-sensor-config active="true"/>
+                <system-sensor-config active="true"/>
+                <thread-sensor-config active="true"/>
+            </platform-sensor-configs>
+            <method-sensor-configs>
+                <connection-sensor-config/>
+                <http-sensor-config sessionCapture="false" string-length="0"/>
+                <invocation-sequence-sensor-config string-length="0"/>
+                <prepared-statement-parameter-sensor-config/>
+                <prepared-statement-sensor-config string-length="0"/>
+                <statement-sensor-config string-length="0"/>
+                <timer-sensor-config string-length="0"/>
+                <log4j-logging-sensor-config minLevel="WARN"/>
+                <remote-apache-httpclientV40-client-sensor-config/>
+                <remote-jetty-httpclientV61-client-sensor-config/>
+                <remote-urlconnection-client-sensor-config/>
+                <remote-spring-resttemplate-client-sensor-config/>
+                <remote-http-server-sensor-config/>
+                <remote-jms-client-sensor-config/>
+                <remote-jms-listener-server-sensor-config/>
+                <remote-manual-server-sensor-config/>
+            </method-sensor-configs>
+            <exception-sensor-config enhanced="false" string-length="0"/>
+            <jmx-loading-sensor-config active="true" forceMBeanServerCreation="false"/>
+            <profile-ids>
+                <profile-id>remote-http</profile-id>
+                <profile-id>55a64c77-4671-4a65-8418-1ec0bd07c6bf</profile-id>
+                <profile-id>a04abb17-b8eb-425f-b299-21ef034bcc6d</profile-id>
+                <profile-id>exclude-classes</profile-id>
+                <profile-id>remote-jms</profile-id>
+                <profile-id>http</profile-id>
+                <profile-id>sql</profile-id>
+                <profile-id>9fe061c2-2fc5-442e-951a-c02e59fb41cb</profile-id>
+            </profile-ids>
+            <classLoadingDelegation>true</classLoadingDelegation>
+            <retransformation-strategy>DISABLE_ON_IBM_JVM</retransformation-strategy>
+            <disruptor-strategy-config buffer-size="1024"/>
+        </environment>
+    </environments>
+</configuration-interface-import-data>

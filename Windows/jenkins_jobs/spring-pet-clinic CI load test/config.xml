@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Continous integration build for spring-pet-clinic-microservices applications. The application is deployed and a JMeter Load Test is executed. When performance deviations are detected the build will fail. </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>10</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>CMR_HOSTNAME</name>
+          <description></description>
+          <defaultValue>localhost</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CMR_PORT</name>
+          <description></description>
+          <defaultValue>8182</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>INSPECTIT_AGENT_FOLDER</name>
+          <description></description>
+          <defaultValue>C:\inspectIT\inspectIT-1.8.3.97\agent</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SUT_HOST</name>
+          <description></description>
+          <defaultValue>localhost</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SUT_PORT</name>
+          <description></description>
+          <defaultValue>8080</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JMETER_USERS</name>
+          <description></description>
+          <defaultValue>10</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JMETER_LOOPCOUNT</name>
+          <description></description>
+          <defaultValue>10</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JMETER_RAMPUP</name>
+          <description></description>
+          <defaultValue>10</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>inspectit</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.6.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/inspectit-labs/spring-petclinic-microservices.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/inspectit</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>git checkout origin/%GIT_BRANCH%&#xd;
+cmd /c call start_all_with_inspectIT.bat %INSPECTIT_AGENT_FOLDER%</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>jmeter -t jmeter/pet_clinic_load_test.jmx -n -JHOST=%SUT_HOST% -JPORT=%SUT_PORT% -JUSERS=2 -JRAMPUP=%JMETER_RAMPUP% -JLOOPCOUNT=2&#xd;
+</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>cd jmeter&#xd;
+del /F pet_clinic_load_test_results.jtl &#xd;
+cd ..  &#xd;
+&#xd;
+set storageName=RecordingForBuildNumber%BUILD_NUMBER%&#xd;
+curl http://%CMR_HOSTNAME%:%CMR_PORT%/rest/storage/%storageName%/create&gt;response.txt&#xd;
+set /p response=&lt;response.txt&#xd;
+set storageId=%response:~18,36%&#xd;
+echo %storageId%&gt;storageId.txt&#xd;
+curl http://%CMR_HOSTNAME%:%CMR_PORT%/rest/storage/start?id=%storageId%&#xd;
+&#xd;
+jmeter -t jmeter/pet_clinic_load_test.jmx -n -l jmeter/pet_clinic_load_test_results.jtl -Jjmeter.save.saveservice.output_format=xml -JHOST=%SUT_HOST% -JPORT=%SUT_PORT% -JUSERS=%JMETER_USERS% -JRAMPUP=%JMETER_RAMPUP% -JLOOPCOUNT=%JMETER_LOOPCOUNT%&#xd;
+</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>set /p storageId=&lt;storageId.txt&#xd;
+curl http://%CMR_HOSTNAME%:%CMR_PORT%/rest/storage/stop</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers>
+    <hudson.plugins.performance.PerformancePublisher plugin="performance@3.3">
+      <errorFailedThreshold>-1</errorFailedThreshold>
+      <errorUnstableThreshold>-1</errorUnstableThreshold>
+      <errorUnstableResponseTimeThreshold></errorUnstableResponseTimeThreshold>
+      <relativeFailedThresholdPositive>25.0</relativeFailedThresholdPositive>
+      <relativeFailedThresholdNegative>50.0</relativeFailedThresholdNegative>
+      <relativeUnstableThresholdPositive>15.0</relativeUnstableThresholdPositive>
+      <relativeUnstableThresholdNegative>25.0</relativeUnstableThresholdNegative>
+      <nthBuildNumber>0</nthBuildNumber>
+      <configType>MRT</configType>
+      <graphType>ART</graphType>
+      <modeOfThreshold>true</modeOfThreshold>
+      <failBuildIfNoResultFile>true</failBuildIfNoResultFile>
+      <compareBuildPrevious>true</compareBuildPrevious>
+      <optionType>ART</optionType>
+      <xml></xml>
+      <modePerformancePerTestCase>true</modePerformancePerTestCase>
+      <excludeResponseTime>false</excludeResponseTime>
+      <modeThroughput>true</modeThroughput>
+      <modeEvaluation>false</modeEvaluation>
+      <ignoreFailedBuilds>false</ignoreFailedBuilds>
+      <ignoreUnstableBuilds>false</ignoreUnstableBuilds>
+      <persistConstraintLog>false</persistConstraintLog>
+      <sourceDataFiles>jmeter/pet_clinic_load_test_results.jtl</sourceDataFiles>
+    </hudson.plugins.performance.PerformancePublisher>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.35.2">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+          </configs>
+          <projects>spring-pet-clinic-cleanup</projects>
+          <condition>SUCCESS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <triggerFromChildProjects>false</triggerFromChildProjects>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.34">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+  </buildWrappers>
+</project>

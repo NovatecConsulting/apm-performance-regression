@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<business-context xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" revision="1" schemaVersion="6" xsi:noNamespaceSchemaLocation="..\schema\ciSchema.xsd">
+    <applications>
+        <applicaction id="175720694" name="Admin Server" revision="1">
+            <or id="3469445092234249166" advanced="false">
+                <operands>
+                    <string-matching matching-type="equals" snippet="9090" search-in-trace="false" max-search-depth="-1" id="590899569111942509" advanced="false">
+                        <http-server-port/>
+                    </string-matching>
+                    <string-matching matching-type="equals" snippet="de.codecentric.boot.admin.registry.StatusUpdater.updateStatusForAllApplications()" search-in-trace="false" max-search-depth="-1" id="-4793960285153705624" advanced="false">
+                        <method-signature/>
+                    </string-matching>
+                </operands>
+            </or>
+            <business-transactions>
+                <business-transaction id="-1764014722" name="Update status">
+                    <or id="-6785023835254143105" advanced="false">
+                        <operands>
+                            <string-matching matching-type="equals" snippet="de.codecentric.boot.admin.registry.StatusUpdater.updateStatusForAllApplications()" search-in-trace="false" max-search-depth="-1" id="-6054822340337775794" advanced="false">
+<method-signature/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1549644822" name="Api Journal">
+                    <or id="4869261896859929647" advanced="false">
+                        <operands>
+                            <string-matching matching-type="starts-with" snippet="/api/journal" search-in-trace="false" max-search-depth="-1" id="76979724044553012" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1095414705" name="Generic API">
+                    <name-extraction regularExpression="/api/([^/]*)/[^/]+/([^/]*)[/]?" targetNamePattern="(1) (2)" max-search-depth="-1" search-in-trace="false">
+                        <http-uri/>
+                    </name-extraction>
+                    <or id="8475386588649637549" advanced="false">
+                        <operands>
+                            <string-matching matching-type="starts-with" snippet="/api" search-in-trace="false" max-search-depth="-1" id="5456504768655212797" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-87997535" name="First path">
+                    <name-extraction regularExpression="^/([^/]*)[/]?" targetNamePattern="(1)" max-search-depth="-1" search-in-trace="false">
+                        <http-uri/>
+                    </name-extraction>
+                    <or id="-9220506452624259002" advanced="true">
+                        <operands>
+                            <boolean boolean-value="true" id="-6622453163482135530" advanced="false"/>
+                        </operands>
+                    </or>
+                </business-transaction>
+            </business-transactions>
+        </applicaction>
+        <applicaction id="956383402" name="Petclinic API" description="" revision="1">
+            <or id="-4410686337826666315" advanced="false">
+                <operands>
+                    <string-matching matching-type="equals" snippet="8080" search-in-trace="false" max-search-depth="-1" id="-2032032241095258716" advanced="false">
+                        <http-server-port/>
+                    </string-matching>
+                </operands>
+            </or>
+            <business-transactions>
+                <business-transaction id="-1019265002" name="Pet / Edit">
+                    <or id="-3673640945713262667" advanced="true">
+                        <operands>
+                            <and id="-5637358747490630868" advanced="false">
+<operands>
+    <string-matching matching-type="regex" snippet="/api/customer/owners/.*/pets/.*" search-in-trace="false" max-search-depth="-1" id="-2911900640523958388" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="PUT" search-in-trace="false" max-search-depth="-1" id="-7287926004812918985" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="1067270770" name="Pet / Add">
+                    <or id="4777055210452307874" advanced="true">
+                        <operands>
+                            <and id="9042217655581100630" advanced="false">
+<operands>
+    <string-matching matching-type="regex" snippet="/api/customer/owners/.*/pets" search-in-trace="false" max-search-depth="-1" id="5901156341610859442" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="POST" search-in-trace="false" max-search-depth="-1" id="7926744920732092077" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1937487511" name="Pet / Get Types">
+                    <or id="2833424104709309557" advanced="false">
+                        <operands>
+                            <string-matching matching-type="equals" snippet="/api/customer/petTypes" search-in-trace="false" max-search-depth="-1" id="1465023660944017250" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="2124957180" name="Owner / Details">
+                    <or id="5733953162241067600" advanced="false">
+                        <operands>
+                            <string-matching matching-type="starts-with" snippet="/api/gateway/owners" search-in-trace="false" max-search-depth="-1" id="-5485677450478467915" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="1206927500" name="Owner / Edit">
+                    <or id="7961934103811933832" advanced="true">
+                        <operands>
+                            <and id="179822465780630468" advanced="false">
+<operands>
+    <string-matching matching-type="starts-with" snippet="/api/customer/owners" search-in-trace="false" max-search-depth="-1" id="-5126243678574067604" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="PUT" search-in-trace="false" max-search-depth="-1" id="-3223019816199370711" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-87864541" name="Owner / Add">
+                    <or id="1254541022203497422" advanced="true">
+                        <operands>
+                            <and id="7285792782166740798" advanced="false">
+<operands>
+    <string-matching matching-type="equals" snippet="/api/customer/owners" search-in-trace="false" max-search-depth="-1" id="-9194570499686577688" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="POST" search-in-trace="false" max-search-depth="-1" id="-8588674007925571138" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="2142128099" name="Owner / Get All">
+                    <or id="-8424614049304985427" advanced="true">
+                        <operands>
+                            <and id="-8136520419884775287" advanced="false">
+<operands>
+    <string-matching matching-type="equals" snippet="/api/customer/owners" search-in-trace="false" max-search-depth="-1" id="623784778111339458" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="GET" search-in-trace="false" max-search-depth="-1" id="-874599791153626065" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1459402862" name="Visits / Add">
+                    <or id="-4696924983661801818" advanced="true">
+                        <operands>
+                            <and id="-8629498610882293854" advanced="false">
+<operands>
+    <string-matching matching-type="regex" snippet="/api/visit/owners/.*/pets/.*/visits" search-in-trace="false" max-search-depth="-1" id="-6335698850905964047" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="POST" search-in-trace="false" max-search-depth="-1" id="2823116994278475817" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-63224031" name="Visits / Get All">
+                    <or id="-2952053282657057512" advanced="true">
+                        <operands>
+                            <and id="-8570289542209453862" advanced="false">
+<operands>
+    <string-matching matching-type="regex" snippet="/api/visit/owners/.*/pets/.*/visits" search-in-trace="false" max-search-depth="-1" id="-616495488688176274" advanced="false">
+        <http-uri/>
+    </string-matching>
+    <string-matching matching-type="equals" snippet="GET" search-in-trace="false" max-search-depth="-1" id="-5802120184603914649" advanced="false">
+        <http-request-method/>
+    </string-matching>
+</operands>
+                            </and>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1724036617" name="Home">
+                    <or id="286345698202436755" advanced="false">
+                        <operands>
+                            <string-matching matching-type="equals" snippet="/" search-in-trace="false" max-search-depth="-1" id="6489618559081661601" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="1537165905" name="Health Check">
+                    <or id="-4701803485857493535" advanced="false">
+                        <operands>
+                            <string-matching matching-type="equals" snippet="/health" search-in-trace="false" max-search-depth="-1" id="3431196970194911745" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-2054405688" name="Static Resources">
+                    <or id="1089194986219653438" advanced="false">
+                        <operands>
+                            <string-matching matching-type="regex" snippet=".*(js|css|woff|woff2|png)" search-in-trace="false" max-search-depth="-1" id="-670741983433768558" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+                <business-transaction id="-1712304438" name="Scripts">
+                    <or id="2198665822029892282" advanced="false">
+                        <operands>
+                            <string-matching matching-type="starts-with" snippet="/scripts" search-in-trace="false" max-search-depth="-1" id="-6589067521216527921" advanced="false">
+<http-uri/>
+                            </string-matching>
+                        </operands>
+                    </or>
+                </business-transaction>
+            </business-transactions>
+        </applicaction>
+    </applications>
+</business-context>

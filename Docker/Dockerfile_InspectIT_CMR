@@ -1,0 +1,5 @@
+FROM inspectit/cmr:1.8.5.101
+
+COPY inspectit/businessContext.xml /CMR/ci/businessContext.xml
+COPY inspectit/petClinic_Profile.xml /CMR/ci/profiles/petClinic_Profile.xml
+COPY inspectit/default.xml /CMR/config/default.xml

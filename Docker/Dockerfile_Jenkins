@@ -1,0 +1,52 @@
+FROM jenkins/jenkins:lts
+
+# RUN /usr/local/bin/install-plugins.sh
+ENV JENKINS_OPTS --httpPort=8090
+
+ENV INSPECTIT_VERSION 1.8.5.101
+ENV JMETER_VERSION 3.3
+
+USER root
+
+# Install various tools & JRE
+RUN apt-get clean && \
+  apt-get update && \
+  apt-get -qy install \
+    wget \
+    telnet \
+    iputils-ping \
+    unzip \
+    maven
+
+# Install jmeter
+RUN mkdir /jmeter \
+  && cd /jmeter/ \
+  && wget http://apache.mirror.iphh.net//jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
+  && tar -xzf apache-jmeter-${JMETER_VERSION}.tgz \
+  && rm apache-jmeter-${JMETER_VERSION}.tgz \
+  && cd apache-jmeter-${JMETER_VERSION}/lib/ext \
+  && wget https://github.com/NovaTecConsulting/JMeter-InfluxDB-Writer/releases/download/v-1.2/JMeter-InfluxDB-Writer-plugin-1.2.jar \
+  && chown -R jenkins:jenkins /jmeter \
+  && cd /
+
+# Install InspectIT Agent
+RUN mkdir /inspectIT \
+  && cd /inspectIT \
+  && wget --no-check-certificate https://github.com/inspectIT/inspectIT/releases/download/${INSPECTIT_VERSION}/inspectit-agent-java6-${INSPECTIT_VERSION}.zip \
+  && unzip inspectit-agent-java6-${INSPECTIT_VERSION}.zip \
+  && rm -f inspectit-agent-java6-${INSPECTIT_VERSION}.zip \
+  && chown -R jenkins:jenkins /inspectIT \
+  && cd /
+
+USER jenkins
+
+# Set Jmeter Home
+ENV JMETER_HOME /jmeter/apache-jmeter-${JMETER_VERSION}/
+
+# Add Jmeter to the Path
+ENV PATH $JMETER_HOME/bin:$PATH
+
+COPY jenkins/jobs/* /var/jenkins_home/jobs/
+
+COPY jenkins/plugins.txt /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt
